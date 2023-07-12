@@ -2,10 +2,10 @@ import pandas as pd
 import re
 
 def text_to_list(persona_str):
-    tmp = persona_str.replace(':', '')
+    tmp = persona_str.replace("\n","").replace(':', '').replace(' ', '')
     persona_list = re.split("[\[\]]",tmp)[1:]
 
-    #print(persona_list)
+    #print(pre_process, persona_list)
     persona_name = []
     persona_value = []
 
@@ -15,22 +15,25 @@ def text_to_list(persona_str):
         else:
             persona_value.append(persona_list[i])
 
-    return persona_name,persona_value
+    return persona_name, persona_value
 
 
 def make_csvfile(persona_str_list):
     name = ""
     value_list = []
+
     for i in persona_str_list:
         persona_name, persona_value = text_to_list(i)
+
+        print(persona_name,persona_value)
 
         if name == "":
             name = persona_name
         value_list.append(persona_value)
 
-    df = pd.DataFrame(data = value_list,columns = name)
+    df = pd.DataFrame(data = value_list, columns = name)
 
-    csv = df.to_csv(index=False)  
+    csv = df.to_csv(index=False, encoding="utf-8_sig")  
 
     return csv
 
