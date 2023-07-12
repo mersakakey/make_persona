@@ -23,6 +23,9 @@ def make_csvfile(persona_str_list):
     value_list = []
 
     for i in persona_str_list:
+        if i == "error":
+            continue
+
         persona_name, persona_value = text_to_list(i)
 
         print(persona_name,persona_value)
