@@ -6,10 +6,23 @@ import base64
 if "outputs" not in st.session_state: 
   st.session_state.outputs = []
 
+# サイドバー
 with st.sidebar:
   openai_api_key = st.text_input('OpenAI API Key')
-  making_temperature= st.slider('要約のtemperature', 0.0, 2.0, 1.0,step=0.1)
+  gpt_model_name = st.radio(label='モデル',
+                 options=('gpt-3.5-turbo-0613', 'gpt-4-0613'),
+                 index=0,
+                 horizontal=True,
+)
+  making_temperature= st.slider('temperature', 0.0, 2.0, 1.0,step=0.1)
+  token_info = st.radio(label='Token情報を表示',
+                 options=('する', 'しない'),
+                 index=0,
+                 horizontal=True,
+)
 
+
+# 入力フォーム
 with st.form("元情報からペルソナを作成"):
   persona = st.text_area(label="ペルソナ", height = 350, value =
 """[名前:]
@@ -48,11 +61,13 @@ if submitted:
   if not target:
     st.warning('ターゲットを入力してください', icon='⚠')
   if submitted and openai_api_key.startswith('sk-'):
-    make_persona = make_persona(openai_api_key, transcription_temperature = making_temperature)
+    make_persona = make_persona(openai_api_key, gpt_model_name = gpt_model_name, transcription_temperature = making_temperature)
     for i in range(making_num):
 
-      output = make_persona.predict(target = target, persona = persona)
+      output, cb = make_persona.predict(target = target, persona = persona)
       st.session_state.outputs.append(output)
     st.write(st.session_state.outputs)
+    if token_info == "する":
+      st.write(cb)
 
 st.write("outputs:" , len(st.session_state.outputs))

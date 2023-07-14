@@ -1,13 +1,16 @@
 from langchain import OpenAI
+from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
+from langchain.callbacks import get_openai_callback
 import re
 
 
 class make_persona:
-  def __init__(_self,  openai_api_key, transcription_temperature=0):
+  def __init__(_self,  openai_api_key, gpt_model_name = "gpt-3.5-turbo-0613", transcription_temperature = 0):
 
-    _self.llm = OpenAI(
+    _self.llm = ChatOpenAI(
+      model_name = gpt_model_name,
       temperature=transcription_temperature,
       openai_api_key=openai_api_key,
     )
@@ -37,12 +40,12 @@ class make_persona:
 """)
 
     chain = LLMChain(llm=_self.llm, prompt=promptSubject)
-
-    result = chain.run(target = target, persona = persona)
+    with get_openai_callback() as cb:
+      result = chain.run(target = target, persona = persona)
 
     result = re.findall('"([^"]*)"',result)
 
     if result:
-      return result[0]
+      return result[0], cb
     else:
       return "error"
