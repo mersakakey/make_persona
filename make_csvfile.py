@@ -31,7 +31,7 @@ def make_csvfile(persona_str_list):
         
         print(persona_name,persona_value)
 
-        if (persona_name == [] or persoma_value == []):
+        if (persona_name == [] or persona_value == []):
             continue
 
         if name == "":
