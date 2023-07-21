@@ -21,23 +21,27 @@ with st.sidebar:
                  horizontal=True,
 )
 
+st.title("ペルソナ生成")
+st.markdown("""## 使い方
+  1. ペルソナをフォーマットにしたがって入力（"日本"のように初期値を設定することもできます）。
+  2. パラメータやモデル、生成数を指定して作成ボタンを押下するとペルソナが生成されます。
+  3. csv出力を押下すると、これまでに出力したペルソナをまとめてcsvにしてDLできます。""")
 
 # 入力フォーム
 with st.form("元情報からペルソナを作成"):
   persona = st.text_area(label="ペルソナ", height = 350, value =
-"""[名前:]
-[性別:]
-[年齢:]
-[国籍:]日本
-[住所:]
-[学歴:]
-[職業:]
-[趣味:]
-[特技:]
-[収入:]
-[既婚、未婚:]
-[家族構成:]
-""")
+"""名前:
+性別:
+年齢:
+国籍:日本
+住所:
+学歴:
+職業:
+趣味:
+特技:
+収入:
+既婚、未婚:
+家族構成:""")
   target = st.text_input(label = "ターゲット", placeholder = "例：22歳の新卒エンジニア")
 
   making_num= st.slider('作成数', 1, 5, 1,step=1)
@@ -63,11 +67,10 @@ if submitted:
   if submitted and openai_api_key.startswith('sk-'):
     make_persona = make_persona(openai_api_key, gpt_model_name = gpt_model_name, transcription_temperature = making_temperature)
     for i in range(making_num):
-
       output, cb = make_persona.predict(target = target, persona = persona)
       st.session_state.outputs.append(output)
     st.write(st.session_state.outputs)
     if token_info == "する":
       st.write(cb)
 
-st.write("outputs:" , len(st.session_state.outputs))
+st.write("出力数:" , len(st.session_state.outputs))

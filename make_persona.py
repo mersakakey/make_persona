@@ -28,12 +28,10 @@ class make_persona:
 ・[ペルソナ]は、[ターゲット]の属性を考慮して挙げてください。
 ・[ペルソナ]は、性別など人口統計学的属性や心理学的属性や行動学的属性や地理学的属性を考慮して挙げてください。
 ・[ペルソナ]の各項目は、論理矛盾や論理飛躍のないものにしてください。
-・名前は一般的になりすぎないように注意してください。
+・名前は一般的になりすぎないように注意して、フルネームで出力してください。
 
 # 出力形式
 ・出力の際には、下記の形式に従ってください。
-
-—–
 
 "{persona}"
 
@@ -46,6 +44,6 @@ class make_persona:
     result = re.findall('"([^"]*)"',result)
 
     if result:
-      return result[0], cb
+      return result[0].replace("\"",""), cb
     else:
-      return "error"
+      return "error", "error"

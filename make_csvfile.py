@@ -2,8 +2,7 @@ import pandas as pd
 import re
 
 def text_to_list(persona_str):
-    tmp = persona_str.replace("\n","").replace(':', '').replace(' ', '')
-    persona_list = re.split("[\[\]]",tmp)[1:]
+    persona_list = re.split("[\n\:]",persona_str)
 
     #print(pre_process, persona_list)
     persona_name = []
@@ -13,7 +12,7 @@ def text_to_list(persona_str):
         if i%2 == 0:
             persona_name.append(persona_list[i])
         else:
-            persona_value.append(persona_list[i])
+            persona_value.append(persona_list[i].strip(" "))
 
     return persona_name, persona_value
 
@@ -28,9 +27,6 @@ def make_csvfile(persona_str_list):
 
         persona_name, persona_value = text_to_list(i)
 
-        
-        print(persona_name,persona_value)
-
         if (persona_name == [] or persona_value == []):
             continue
 
@@ -40,7 +36,9 @@ def make_csvfile(persona_str_list):
     
     if value_list == []:
         print("error")
-        return 0
+
+    if "" in name:
+        name.remove("")
 
     df = pd.DataFrame(data = value_list, columns = name)
 
@@ -49,16 +47,11 @@ def make_csvfile(persona_str_list):
     return csv
 
 
-# make_csvfile(["""名前:高田健一
+# #ifDEBUG
+# print(make_csvfile(["""名前:高田健一
 # 性別:男性
 # 年齢:22歳
 # 国籍:日本
-# 住所:東京都渋谷区
-# 学歴:名古屋大学 工学部情報工学科卒業
-# 職業:エンジニア（AI系）
-# 趣味:プログラミング、アウトドア活動、スポーツ観戦
-# 特技:アルゴリズム設計、言語学習
-# 収入:500万
-# 既婚、未婚:未婚
 # 家族構成:父、母、姉（25歳）
-# """])
+# """]))
+# #endif
